@@ -6,7 +6,7 @@
 //  Copyright © 2019 Chhaileng Peng. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 class ArticlePresenter: ArticleServiceDelegate {
     
@@ -23,6 +23,11 @@ class ArticlePresenter: ArticleServiceDelegate {
         articleService?.getArticles(title: title, page: page)
     }
     
+    func addArticleWithImage(image: UIImage, article: Article) {
+        let imageData = UIImage.jpegData(image)(compressionQuality: 0.5)
+        articleService?.uploadImageAndAddArticle(imageData: imageData!, article: article)
+    }
+    
     func didResponseArticles(articles: [Article]) {
         for article in articles {
             let date = article.createdDate?.split(separator: " ")
@@ -31,6 +36,10 @@ class ArticlePresenter: ArticleServiceDelegate {
         }
         
         delegate?.didResponseArticles(articles: articles)
+    }
+    
+    func didFinishAddArticle(message: String, article: Article) {
+        delegate?.didFinishAddArticle(message: message, article: article)
     }
     
 }

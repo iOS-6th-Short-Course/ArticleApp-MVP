@@ -10,4 +10,5 @@ import Foundation
 
 protocol ArticleServiceDelegate {
     func didResponseArticles(articles: [Article])
+    func didFinishAddArticle(message: String, article: Article)
 }

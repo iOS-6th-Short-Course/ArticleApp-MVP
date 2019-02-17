@@ -10,4 +10,5 @@ import Foundation
 
 protocol ArticlePresenterDelegate {
     func didResponseArticles(articles: [Article])
+    func didFinishAddArticle(message: String, article: Article)
 }

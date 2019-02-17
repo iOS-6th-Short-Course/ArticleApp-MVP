@@ -9,7 +9,7 @@
 import UIKit
 import Kingfisher
 
-class AddArticleViewController: UIViewController {
+class AddArticleViewController: UIViewController, ArticlePresenterDelegate {
     
     @IBOutlet weak var thumbnailImageView: UIImageView!
     @IBOutlet weak var authorTextField: UITextField!
@@ -18,7 +18,7 @@ class AddArticleViewController: UIViewController {
     @IBOutlet weak var descriptionTextView: UITextView!
     @IBOutlet weak var button: UIButton!
     
-    var articleService: ArticleService!
+    var articlePresenter: ArticlePresenter!
     
     var imagePickerController: UIImagePickerController!
     
@@ -44,7 +44,9 @@ class AddArticleViewController: UIViewController {
             secondImage = firstImage
         }
         
-        articleService = ArticleService()
+        articlePresenter = ArticlePresenter()
+        articlePresenter.delegate = self
+        
         imagePickerController = UIImagePickerController()
         imagePickerController.delegate = self
         imagePickerController.sourceType = .photoLibrary
@@ -61,54 +63,26 @@ class AddArticleViewController: UIViewController {
     
 
     @IBAction func buttonTapped(_ sender: Any) {
-//        if var article = article {
-//            article = Article(id: article.id!,
-//                              title: titleTextField.text!,
-//                              description: descriptionTextView.text!,
-//                              author: authorTextField.text!,
-//                              thumbnail: article.thumbnail!,
-//                              cateId: Int(categoryTextField.text!)!)
-//            
-//            var imageData: Data? = nil
-//            
-//            if firstImage != secondImage {
-//                imageData = UIImage.pngData(thumbnailImageView.image!)()
-//            }
-//            
-//            articleService.checkImageUpload(data: imageData, article: article, completionHandler: { (msg, status) in
-//                let alert = UIAlertController(title: msg, message: nil, preferredStyle: .alert)
-//                alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { (_) in
-//                    if status {
-//                        self.navigationController?.popViewController(animated: true)
-//                    }
-//                }))
-//                DispatchQueue.main.async {
-//                    self.present(alert, animated: true, completion: nil)
-//                }
-//                
-//            })
-//        } else {
-//            let article = Article(id: 0,
-//                                  title: titleTextField.text!,
-//                                  description: descriptionTextView.text!,
-//                                  author: authorTextField.text!,
-//                                  thumbnail: "",
-//                                  cateId: Int(categoryTextField.text!)!)
-//
-//            let imageData = UIImage.pngData(thumbnailImageView.image!)()
-//            
-//            articleService.uploadImage(imageData: imageData!, article: article) { (message, status) in
-//                let alert = UIAlertController(title: message, message: nil, preferredStyle: .alert)
-//                alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { (_) in
-//                    if status {
-//                        self.navigationController?.popViewController(animated: true)
-//                    }
-//                }))
-//                DispatchQueue.main.async {
-//                    self.present(alert, animated: true, completion: nil)
-//                }
-//            }
-//        }
+        let article = Article()
+        article.title = titleTextField.text
+        article.description = descriptionTextView.text
+        article.author = authorTextField.text
+        article.category = Category(id: Int(categoryTextField.text!)!, name: "")
+        
+        articlePresenter.addArticleWithImage(image: thumbnailImageView.image!, article: article)
+    }
+    
+    func didFinishAddArticle(message: String, article: Article) {
+        let alert = UIAlertController(title: message, message: nil, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { _ in
+            NotificationCenter.default.post(name: NSNotification.Name("newArticleAdded"), object: nil, userInfo: ["newArticle" : article])
+            self.navigationController?.popViewController(animated: true)
+        }))
+        present(alert, animated: true, completion: nil)
+    }
+    
+    func didResponseArticles(articles: [Article]) {
+        
     }
     
 }

@@ -13,6 +13,7 @@ class APIManager {
     private static let BASE_HOSTNAME = "http://ams.chhaileng.com"
     
     static let URL_ARTICLE = "\(BASE_HOSTNAME)/api/v1/articles"
+    static let URL_UPLOAD = "\(BASE_HOSTNAME)/api/v1/upload"
     
     static let API_HEADERS = [
         "Authorization": "Basic YXBpOmFwaQ==",
